@@ -26,7 +26,9 @@
 #define PIXELS_COLUMNWRITERBUILDER_H
 #include "writer/ColumnWriter.h"
 #include "writer/PixelsWriterOption.h"
-
+#include "writer/DateColumnWriter.h"
+#include "writer/TimestampColumnWriter.h"
+#include "writer/DecimalColumnWriter.h"
 class ColumnWriterBuilder {
 public:
     static std::shared_ptr<ColumnWriter>

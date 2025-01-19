@@ -92,6 +92,7 @@ void PixelsConsumer::run() {
             std::cout << "loading data from: " << originalFilePath << std::endl;
 
             while (std::getline(reader, line)) {
+                std::cout<<1<<std::endl;
                 if (line.empty()) {
                     std::cout << "got empty line" << std::endl;
                     continue;
@@ -117,7 +118,9 @@ void PixelsConsumer::run() {
                     if (i > colsInLine.size() || colsInLine[i].empty() || colsInLine[i] == "\\N") {
                         columnVectors[i]->addNull();
                     } else {
+                        std::cout<<"using add"<<std::endl;
                         columnVectors[i]->add(colsInLine[i]);
+                        std::cout<<"finish add"<<std::endl;
                     }
                 }
 
@@ -142,8 +145,10 @@ void PixelsConsumer::run() {
             }
         }
     }
+    std::cout<<2<<std::endl;
     // 剩余line写入文件
     if (rowCounter > 0) {
+        std::cout<<3<<std::endl;
         if (rowBatch->rowCount != 0) {
             pixelsWriter->addRowBatch(rowBatch);
             rowBatch->reset();
@@ -151,5 +156,6 @@ void PixelsConsumer::run() {
         pixelsWriter->close();
         this->loadedFiles.push_back(targetFilePath);
     }
+
     std::cout << "Exit PixelsConsumer" << std::endl;
 }

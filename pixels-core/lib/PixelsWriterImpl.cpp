@@ -61,7 +61,7 @@ bool PixelsWriterImpl::addRowBatch(std::shared_ptr<VectorizedRowBatch> rowBatch)
     curRowGroupDataLength=0;
     curRowGroupNumOfRows+=rowBatch->count();
     writeColumnVectors(rowBatch->cols,rowBatch->count());
-
+    std::cout<<"finish writeColumnVectors"<<std::endl;
     if(curRowGroupDataLength>=rowGroupSize){
         writeRowGroup();
         curRowGroupNumOfRows=0L;
@@ -72,16 +72,22 @@ bool PixelsWriterImpl::addRowBatch(std::shared_ptr<VectorizedRowBatch> rowBatch)
 
 void PixelsWriterImpl::writeColumnVectors(std::vector<std::shared_ptr<ColumnVector>>& columnVectors, int rowBatchSize)
 {
+    std::cout << "PixelsWriterImpl::writeColumnVectors" << std::endl;   
     std::vector<std::future<void>> futures;
     std::atomic<int> dataLength(0);
     int commonColumnLength = columnVectors.size() ;
 
     // Writing regular columns
     for (int i = 0; i < commonColumnLength; ++i) {
-       // dataLength += columnWriters[i]->write(columnVectors[i], rowBatchSize);
+    //     if (!columnWriters[i]) {
+    //     std::cerr << "columnWriter[" << i << "] is null!" << std::endl;
+    //     return;
+    // }
+    //    dataLength += columnWriters[i]->write(columnVectors[i], rowBatchSize);
        futures.emplace_back(std::async(std::launch::async, [this, columnVectors, rowBatchSize, i, &dataLength]() {
            try {
-               dataLength += columnWriters[i]->write(columnVectors[i], rowBatchSize);
+                std::cout << "Writing column vector: " << i << std::endl;
+                dataLength += columnWriters[i]->write(columnVectors[i], rowBatchSize);
            } catch (const std::exception& e) {
                throw std::runtime_error("failed to write column vector: " + std::string(e.what()));
            }

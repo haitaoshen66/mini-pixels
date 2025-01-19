@@ -24,9 +24,16 @@ public:
 	explicit DateColumnVector(uint64_t len = VectorizedRowBatch::DEFAULT_SIZE, bool encoding = false);
 	~DateColumnVector();
     void * current() override;
+	void add(std::string &value) override;
+    void add(bool value) override;
+    // void add(int64_t value) override;
+    void add(int value) override;
+	void ensureSize(uint64_t size, bool preserveData) override;
 	void print(int rowCount) override;
 	void close() override;
 	void set(int elementNum, int days);
+	bool parseDate(const std::string &val, int &year, int &month, int &day);
+	int calculateDaysSinceEpoch(int year, int month, int day);
 };
 
 #endif // DUCKDB_DATECOLUMNVECTOR_H
